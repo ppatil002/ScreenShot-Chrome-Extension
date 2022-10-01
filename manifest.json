@@ -1,15 +1,29 @@
 {
     "manifest_version": 3,
-    "name": "PP Screenshot",
-    "description": "Extension to captre and manage screenShots and screeRecording",
-    "version": "1.0.0",
 
-    "action": {
-        "default_popup": "Popup/popup.html"
+    "name": "PP SS",
+    "description": "An easy to use extension for taking screenshots in the browser",
+    "version": "1.0",
+
+    "content_scripts": [
+        {
+          "matches": ["https://*/*", "http://*/*"],
+          "js": ["content-custom-area.js"],
+          "css": ["content-custom-area.css"]
+        },
+        {
+          "matches": ["https://*/*", "http://*/*"],
+          "js": ["content-full-page.js"]
+        }
+      ],
+
+    "background": {
+        "service_worker": "background.js"
     },
 
-    "permissions": [
-        "activeTab",
-        "tabs"
-    ]
+    "action": {
+        "default_popup": "popup.html"
+    },
+
+    "permissions": ["activeTab", "tabs"]
 }
