@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "PP Screenshot",
+    "description": "Extension to captre and manage screenShots and screeRecording",
+    "version": "1.0.0",
+
+    "action": {
+        "default_popup": "Popup/popup.html"
+    },
+
+    "permissions": [
+        "activeTab",
+        "tabs"
+    ]
+}
