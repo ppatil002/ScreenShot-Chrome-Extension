@@ -87,6 +87,10 @@ body.dark-theme {
   background-image: var(--custom-area-icon);
 }
 
+#visible-btn-icon {
+  background-image: var(--visible-area-icon);
+}
+
 p {
   font-size: 1.1em;
   margin-left: 12px;

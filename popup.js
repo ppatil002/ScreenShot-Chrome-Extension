@@ -1,5 +1,6 @@
 "use strict";
 
+console.log("popup.js Working Fine");
 // Function to create a file name for the screenshot
 function getFilename(url) {
   // Creates a url object to parse the url more easily
@@ -49,12 +50,37 @@ function clickCustomArea() {
   });
 }
 
-// EventListener for the on/off switch
-document
-  .querySelector(".onoffswitch-checkbox")
-  .addEventListener("click", onoff);
+//
+// Visible content button stuff
+//
 
-// Function for the on/off switch for dark/light mode
-function onoff() {
-  document.body.classList.toggle("dark-theme");
+// EventListener for "Visible Content" button
+document
+  .getElementById("visibleContent")
+  .addEventListener("click", clickVisibleContent);
+
+// Function to call when "Visible Content" button is clicked.
+function clickVisibleContent() {
+  // Get current active tab inforamtion
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    const currentTab = tabs[0];
+
+    let filename = getFilename(currentTab.url);
+
+    console.log("visible");
+    // Start capturing the visible content of the currently active tab
+    chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataURL) => {
+      if (dataURL) {
+        var data = {
+          image: dataURL,
+          width: window.innerWidth,
+          height: window.innerHeight,
+          devicePixelRatio: window.devicePixelRatio,
+        };
+
+        // Send the image including additional information to new tab
+        sendImageToNewTab(data, currentTab.id, currentTab.index, filename);
+      }
+    });
+  });
 }

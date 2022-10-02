@@ -1,5 +1,11 @@
 "use strict";
 
+/*
+!Screenshot size
+.drawImage(image,sx,sy,x,y,width,height) line 185
+!Overlay feature to make it look like a ss
+ */
+
 // Constants
 const overlayId = "snapper-overlay";
 const closeButtonId = "snapper-close-button";
