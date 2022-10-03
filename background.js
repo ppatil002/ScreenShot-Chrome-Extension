@@ -72,7 +72,8 @@ async function sendImageToNewTab(
   filename
 ) {
   // Create new tab to place the created screenshot in
-  const createdTabPromise = createTab(currentTabId, currentTabIndex);
+  let URL = "screenshot_edit.html";
+  const createdTabPromise = createTab(currentTabId, currentTabIndex, URL);
 
   // Run when promise is fulfilled (content script on new tab loaded)
   createdTabPromise.then((createdTab) => {
@@ -82,7 +83,8 @@ async function sendImageToNewTab(
     chrome.tabs.query(
       {
         currentWindow: true,
-        url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/screenshot_edit.html",
+        // url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/screenshot_edit.html",
+        url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/" + URL,
       },
       function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
@@ -115,12 +117,13 @@ async function sendImageToNewTab(
 }
 
 // Function to asynchronously create a new tab and return created tab after its content script is loaded
-function createTab(currentTabId, currentTabIndex) {
+function createTab(currentTabId, currentTabIndex, URL) {
   return new Promise((resolve) => {
     chrome.tabs.create(
       {
         active: false,
-        url: "screenshot_edit.html",
+        url: URL,
+        // url: "screenshot_edit.html",
         openerTabId: currentTabId,
         index: currentTabIndex + 1,
       },
@@ -133,5 +136,55 @@ function createTab(currentTabId, currentTabIndex) {
         });
       }
     );
+  });
+}
+
+// Function to send an image + additional information to a new tab
+async function showHistoryinNewTab(
+  data,
+  currentTabId,
+  currentTabIndex,
+  filename
+) {
+  // Create new tab to place the created screenshot in
+  let URL = "historyTab.html";
+  const createdTabPromise = createTab(currentTabId, currentTabIndex, URL);
+
+  // Run when promise is fulfilled (content script on new tab loaded)
+  createdTabPromise.then((createdTab) => {
+    // Workaround to fix the bug where 2 tabs are created after selecting a custom area to screenshot
+    // TODO: Replace with better solution for the bug
+    // Go through all tabs matching the url and close everyone that doesn't match the id of the created tab & and the index is bigger than the current tab index + 2
+    chrome.tabs.query(
+      {
+        currentWindow: true,
+        // url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/screenshot_edit.html",
+        url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/" + URL,
+      },
+      function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+          if (
+            tabs[i].id !== createdTab.id &&
+            tabs[i].index > currentTabIndex + 1
+          ) {
+            chrome.tabs.remove(tabs[i].id);
+          }
+        }
+      }
+    );
+
+    // Add action and filename to data object
+    data.action = "Show History";
+    data.filename = filename;
+
+    // Send the image + additional information to the newly created tab
+    chrome.tabs.sendMessage(createdTab.id, data, (responseCallback) => {
+      if (responseCallback) {
+        console.log("Fetch data from local storage");
+
+        // Manually change to the newly created tab
+        chrome.tabs.update(createdTab.id, { active: true, highlighted: true });
+      }
+    });
   });
 }
