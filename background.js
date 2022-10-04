@@ -3,6 +3,8 @@
 //$ The runtime.onMessage
 // event is fired in each content script running in the specified tab for the current extension.
 
+console.log("Background Started");
+
 // Function that initiates the process of creating a custom area screenshot
 async function initiateCustomAreaScreenshot(currentTab, filename) {
   // Hide scrollbar before capturing the tab to avoid showing the scrollbar in the selection area
@@ -108,7 +110,7 @@ async function sendImageToNewTab(
         console.log(
           "Image clipped and send from content to background(Open New Tab)"
         );
-
+        console.log(getDateTime());
         // Manually change to the newly created tab
         chrome.tabs.update(createdTab.id, { active: true, highlighted: true });
       }
@@ -187,4 +189,17 @@ async function showHistoryinNewTab(
       }
     });
   });
+}
+
+function getDateTime() {
+  let today = new Date();
+  let date =
+    today.getFullYear() +
+    "-" +
+    ("0" + (today.getMonth() + 1)).slice(-2) +
+    "-" +
+    ("0" + today.getDate()).slice(-2);
+  let time =
+    today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
+  return date + "-" + time;
 }

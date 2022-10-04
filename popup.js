@@ -1,24 +1,6 @@
 "use strict";
-let key1 = "Name1";
-let key2 = "Name2";
 console.log("popup.js Working Fine");
 console.log("Start");
-// let i = 0;
-// chrome.storage.local.set({ key1: "Prerna" }, function () {
-//   console.log("Value is set to " + key1);
-// });
-// chrome.storage.local.set({ key2: "Pawar" }, function () {
-//   console.log("Value is set to " + key2);
-// });
-
-// chrome.storage.local.get([key1], function (result) {
-//   console.log("Value currently is " + result.key);
-// });
-
-// chrome.storage.local.get([key2], function (result) {
-//   console.log("Value currently is " + result.key);
-// });
-
 //$ Setting the values
 // chrome.storage.local.set(
 //   {
@@ -34,16 +16,16 @@ console.log("Start");
 // chrome.storage.local.clear(() => {
 //   console.log("Storage Cleared");
 // });
+
 let historyItems;
 function onGot(item) {
   let values = Object.entries(item);
-  console.log("1");
-  console.table(values);
+  // console.table(values);
   if (values.length > 5) {
     deleteLastImage(values);
   }
   historyItems = item;
-  // console.log(item);
+  console.log(historyItems);
 }
 function onError(error) {
   console.log(`Error: ${error}`);
@@ -64,9 +46,13 @@ const date =
 const time =
   today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
 const dateTime = date + "-" + time;
-// console.log(today);
-// console.log(time);
-// console.log(dateTime);
+
+function pushOnStorage(key) {
+  chrome.storage.local.set({ [dateTime]: key }, () => {
+    console.log(dateTime + "is added to storage");
+  });
+  getAllElements();
+}
 
 // chrome.storage.local.set({ [dateTime]: time }, () => {
 //   console.log(dateTime + "is added to storage");
@@ -162,7 +148,7 @@ function clickVisibleContent() {
 
     let filename = getFilename(currentTab.url);
 
-    console.log("visible");
+    // console.log("visible");
     // Start capturing the visible content of the currently active tab
     chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataURL) => {
       if (dataURL) {
@@ -173,6 +159,7 @@ function clickVisibleContent() {
           devicePixelRatio: window.devicePixelRatio,
         };
 
+        pushOnStorage(data.image);
         // Send the image including additional information to new tab
         sendImageToNewTab(data, currentTab.id, currentTab.index, filename);
       }
@@ -183,12 +170,13 @@ function clickVisibleContent() {
 //
 // History button stuff
 //
-document
-  .getElementById("history-btn-icon")
-  .addEventListener("click", showHistory());
 
+document
+  .getElementById("recentScreenshots")
+  .addEventListener("click", showHistory);
+
+// Function to call when "Full Page" button is clicked.
 function showHistory() {
-  // Get current active tab inforamtion
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const currentTab = tabs[0];
 
