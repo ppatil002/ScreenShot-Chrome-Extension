@@ -11,6 +11,7 @@ body {
   --custom-area-icon: var(--custom-area-icon-dark);
   --visible-area-icon-light: url('images/visible_white.png');
   --visible-area-icon-dark: url('images/visible_black.png');
+  --recent-icon-dark: url('images/most-recent.jpg');
   --visible-area-icon: var(--visible-area-icon-dark);
   --full-page-icon-light: url('images/full_white.png');
   --full-page-icon-dark: url('images/full_black.png');
@@ -25,7 +26,7 @@ body {
   font-family: "Rubik", sans-serif, "Helvetica", "Arial", "Sans-Serif";
   box-sizing: border-box;
   margin: 0;
-  width: 200px;
+  width: 235px;
   background-color: var(--light-color);
   color: var(--dark-color);
   line-height: 1.2rem;
@@ -89,6 +90,10 @@ body.dark-theme {
 
 #visible-btn-icon {
   background-image: var(--visible-area-icon);
+}
+
+#recent-btn-icon {
+  background-image: var(--recent-icon-dark);
 }
 
 p {

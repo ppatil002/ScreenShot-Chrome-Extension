@@ -1,6 +1,4 @@
 "use strict";
-console.log("popup.js Working Fine");
-console.log("Start");
 //$ Setting the values
 // chrome.storage.local.set(
 //   {
@@ -81,7 +79,6 @@ function deleteLastImage(array) {
   getAllElements();
 }
 
-console.log("End");
 // Function to create a file name for the screenshot
 function getFilename(url) {
   // Creates a url object to parse the url more easily
@@ -108,7 +105,7 @@ function getFilename(url) {
 
   if (pathname !== "-") pathname += "-";
 
-  return "snapper-" + hostname + pathname + dateTime + ".png";
+  return hostname + pathname + dateTime + ".png";
 }
 
 //
@@ -159,7 +156,7 @@ function clickVisibleContent() {
           devicePixelRatio: window.devicePixelRatio,
         };
 
-        pushOnStorage(data.image);
+        // pushOnStorage(data.image);
         // Send the image including additional information to new tab
         sendImageToNewTab(data, currentTab.id, currentTab.index, filename);
       }

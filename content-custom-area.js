@@ -7,10 +7,10 @@
  */
 
 // Constants
-const overlayId = "snapper-overlay";
-const closeButtonId = "snapper-close-button";
-const canvasId = "snapper-canvas";
-const clippedCanvasId = "snapper-clipped-canvas";
+const overlayId = "overlay";
+const closeButtonId = "close-button";
+const canvasId = "canvas";
+const clippedCanvasId = "clipped-canvas";
 
 const allVideosOnPage = document.querySelectorAll("video");
 const allVideosPlaying = [];
@@ -40,7 +40,7 @@ var clippedImageURI;
 
 // Listen to the message sent by the background script to instantiate the overlay
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "createCustomAreaScreenshot") {
+  if (message.action === "customArea") {
     // Assign sent variables to global variables
     visibleTabImageURI = message.imageURI;
     currentTab = message.currentTab;
@@ -57,7 +57,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // Create canvas showing a screenshot of the page
       canvas = createDrawableCanvas();
       // // Create overlay over canvas
-      // overlay = createOverlayElement();
+      overlay = createOverlayElement();
       // // Add close button to overlay
       addCloseButton();
     }
@@ -145,7 +145,7 @@ function drawRectangle(x, y, width, height, c) {
   ctx.globalAlpha = 0.5;
 
   // set fill and stroke styles
-  ctx.fillStyle = "yellow";
+  ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
 
   // draw a rectangle with fill and stroke
@@ -205,7 +205,7 @@ function clipCanvasAndCreateImage() {
       width: window.innerWidth, //!width=mouseX-startX
       height: window.innerHeight,
       devicePixelRatio: window.devicePixelRatio,
-      action: "sendCustomAreaScreenshot",
+      action: "customAreaSuccessful",
     };
 
     // Send a message to the background script to send the custom area screenshot to the new tab
@@ -218,9 +218,7 @@ function clipCanvasAndCreateImage() {
       },
       (responseCallback) => {
         if (responseCallback) {
-          console.log(
-            "Message has reached the recipient (background.js): send custom area screenshot to the new tab"
-          );
+          console.log("Send SS to New Tab");
         }
 
         return true;

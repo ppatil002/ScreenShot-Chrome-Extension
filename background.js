@@ -1,8 +1,3 @@
-// Sends a single message to the content script(s) in the specified tab,
-// with an optional callback to run when a response is sent back.
-//$ The runtime.onMessage
-// event is fired in each content script running in the specified tab for the current extension.
-
 console.log("Background Started");
 
 // Function that initiates the process of creating a custom area screenshot
@@ -20,13 +15,11 @@ async function initiateCustomAreaScreenshot(currentTab, filename) {
           imageURI: createdScreenshot,
           currentTab: currentTab,
           filename: filename,
-          action: "createCustomAreaScreenshot",
+          action: "customArea",
         },
         (responseCallback) => {
           if (responseCallback) {
-            console.log(
-              "Message has reached the recipient (content-custom-area.js): Sent message to content script to create an overlay to select a custom area to screenshot"
-            );
+            console.log("Create another canvas overlay to clip");
           }
         }
       );
@@ -53,7 +46,7 @@ async function captureTab(timeout) {
 
 // Function to listen to the custom area content script (content-custom-area.js) to send the custom area image to the new tab
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.data.action === "sendCustomAreaScreenshot") {
+  if (message.data.action === "customAreaSuccessful") {
     // Call sendImageToNewTab() with the new screenshot of the selected area
     sendImageToNewTab(
       message.data, //? data contains img url img width&height
@@ -86,7 +79,7 @@ async function sendImageToNewTab(
       {
         currentWindow: true,
         // url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/screenshot_edit.html",
-        url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/" + URL,
+        url: "chrome-extension://iemghmgbnaiiidmfabbkmcenlhofoifl/" + URL,
       },
       function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
@@ -110,7 +103,6 @@ async function sendImageToNewTab(
         console.log(
           "Image clipped and send from content to background(Open New Tab)"
         );
-        console.log(getDateTime());
         // Manually change to the newly created tab
         chrome.tabs.update(createdTab.id, { active: true, highlighted: true });
       }
@@ -161,7 +153,7 @@ async function showHistoryinNewTab(
       {
         currentWindow: true,
         // url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/screenshot_edit.html",
-        url: "chrome-extension://dfofdengbpakahfhbfdoeicpecgbldco/" + URL,
+        url: "chrome-extension://iemghmgbnaiiidmfabbkmcenlhofoifl/" + URL,
       },
       function (tabs) {
         for (var i = 0; i < tabs.length; i++) {
@@ -189,17 +181,4 @@ async function showHistoryinNewTab(
       }
     });
   });
-}
-
-function getDateTime() {
-  let today = new Date();
-  let date =
-    today.getFullYear() +
-    "-" +
-    ("0" + (today.getMonth() + 1)).slice(-2) +
-    "-" +
-    ("0" + today.getDate()).slice(-2);
-  let time =
-    today.getHours() + "-" + today.getMinutes() + "-" + today.getSeconds();
-  return date + "-" + time;
 }

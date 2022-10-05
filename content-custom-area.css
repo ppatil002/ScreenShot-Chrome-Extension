@@ -3,7 +3,7 @@
     overflow: hidden;
 }
 
-#snapper-overlay {
+#overlay {
     background-color: white;
     position: fixed;
     top: 0;
@@ -13,7 +13,7 @@
     pointer-events: none;
 }
 
-#snapper-canvas {
+#canvas {
     cursor: crosshair;
     z-index: 9950;
     position: fixed;
@@ -21,7 +21,7 @@
     left: 0;
 }
 
-#snapper-close-button {
+#close-button {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -44,6 +44,6 @@
     transition: background-color 0.25s;
 }
 
-/* #snapper-close-button:hover {
+/* #close-button:hover {
     background-color: rgba(36, 36, 36, 0.5);
 } */
