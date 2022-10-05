@@ -188,8 +188,8 @@ function clipCanvasAndCreateImage() {
       image, // load image into the canvas
       startX, // x position (upper left corner) of the selected area
       startY, // y position (upper left corner) of the selected area
-      mouseX - startX, //!width of the selected area Add +10
-      mouseY - startY, //! height of the selected area
+      mouseX - startX,
+      mouseY - startY,
       0, // x position of where to place the clipped image in the canvas
       0, // y position of where to place the clipped image in the canvas
       mouseX - startX, // width of the screenshot in the canvas (aspect ratio)
@@ -197,12 +197,12 @@ function clipCanvasAndCreateImage() {
     ); // height of the screenshot in the canvas (aspect ratio)
 
     // Turn clipped canvas into image
-    clippedImageURI = clippedCanvas.toDataURL("image/png"); //!.png .jpeg
+    clippedImageURI = clippedCanvas.toDataURL("image/png");
 
     // Create data object including everything needed to show the image on the new tab
     var data = {
       image: clippedImageURI,
-      width: window.innerWidth, //!width=mouseX-startX
+      width: window.innerWidth,
       height: window.innerHeight,
       devicePixelRatio: window.devicePixelRatio,
       action: "customAreaSuccessful",
@@ -250,4 +250,28 @@ function addCloseButton() {
   };
 
   document.body.appendChild(closeButton);
+}
+
+function createOverlayElement() {
+  // Create overlay element
+  const siteOverlay = document.createElement("div");
+
+  // Dynamically set overlay width and height
+  siteOverlay.style.width = `${windowInnerWidthString}px`;
+  siteOverlay.style.height = `${windowInnerHeightString}px`;
+
+  siteOverlay.setAttribute("id", overlayId);
+
+  // Save and pause every video on the page that is currently playing
+  allVideosOnPage.forEach((video) => {
+    if (!video.paused) {
+      allVideosPlaying.push(video);
+      video.pause();
+    }
+  });
+
+  // Add created overlay to body to show in current tab
+  document.body.appendChild(siteOverlay);
+
+  return siteOverlay;
 }
