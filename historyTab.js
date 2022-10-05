@@ -120,13 +120,3 @@ document.querySelector("#btn5").addEventListener("click", async () => {
     alert("There was an error while copying image to clipboard :/");
   }
 });
-
-// function showImages(history) {
-//   let values = Object.entries(history);
-//   for (let i = 0; i < values.length; i++) {
-//     let source = values[i][1];
-//     var img = new Image();
-//     img.src = source;
-//     document.getElementById("body").appendChild(img);
-//   }
-// }

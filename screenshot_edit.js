@@ -1,22 +1,15 @@
 "use strict";
 
 console.log("Working area");
-// Add listener that recieves the image with additional information
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "sendImageToNewTab") {
-    // var image = document.getElementById("capture_image");
     var downloadButtonPNG = document.getElementById("download_png");
-
-    // Set image source as base64 image
-    // image.src = message.image;
 
     let originalImage = new Image();
     originalImage.src = message.image;
-    // document.getElementById("body").appendChild(originalImage);
 
     const img1 = new Image();
     const temp1 = message.image;
-    //Set both image and canvas
     img1.src = temp1;
     img1.width = message.width;
     img1.height = message.height;
@@ -29,13 +22,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     localStorage.setItem("img_crop", message.image);
 
-    // // Add zoom in/out when image clicked
-    // image.onclick = () => {
-    //   console.log("image clicked");
-    //   image.classList.contains("zoomed_in")
-    //     ? image.classList.remove("zoomed_in")
-    //     : image.classList.add("zoomed_in");
-    // };
+    // Add zoom in/out when image clicked
+    image.onclick = () => {
+      console.log("image clicked");
+      image.classList.contains("zoomed_in")
+        ? image.classList.remove("zoomed_in")
+        : image.classList.add("zoomed_in");
+    };
 
     // Set href and download property on button to download image when clicked
     downloadButtonPNG.href = message.image;
@@ -71,7 +64,7 @@ document.querySelector(".copy-image").addEventListener("click", async () => {
 });
 
 document.querySelector("#crop-image").addEventListener("click", async () => {
-  window.open("./Crop_Image.html");
+  window.open("https://crop-image-pratik.herokuapp.com/");
 });
 
 function getDate() {
@@ -102,12 +95,9 @@ function getAllElements() {
 
 function onGot(item) {
   let values = Object.entries(item);
-  // console.table(values);
   if (values.length > 5) {
     deleteLastImage(values);
   }
-  // historyItems = item;
-  // console.log(historyItems);
 }
 function onError(error) {
   console.log(`Error: ${error}`);
@@ -116,7 +106,6 @@ function onError(error) {
 function deleteLastImage(array) {
   let leastRecent = array[0][0];
   for (let i = 0; i < array.length; i++) {
-    // console.log(array[i][0]);
     if (leastRecent > array[i][0]) {
       leastRecent = array[i][0];
     }

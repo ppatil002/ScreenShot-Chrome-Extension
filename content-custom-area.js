@@ -1,11 +1,5 @@
 "use strict";
 
-/*
-!Screenshot size
-.drawImage(image,sx,sy,x,y,width,height) line 185
-!Overlay feature to make it look like a ss
- */
-
 // Constants
 const overlayId = "overlay";
 const closeButtonId = "close-button";
@@ -46,7 +40,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     currentTab = message.currentTab;
     filename = message.filename;
 
-    // If no overlay, close button and canvas exists, create them
     if (
       !(
         document.getElementById(overlayId) &&
@@ -56,9 +49,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     ) {
       // Create canvas showing a screenshot of the page
       canvas = createDrawableCanvas();
-      // // Create overlay over canvas
+      // Create overlay over canvas
       overlay = createOverlayElement();
-      // // Add close button to overlay
+      // Add close button to overlay
       addCloseButton();
     }
 
@@ -68,55 +61,45 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Function to create a canvas element to draw a rectangular area over it to screenshot
+// create a canvas element to draw a rectangular area
 function createDrawableCanvas() {
-  // Hide scrollbar before canvas is created to avoid the image being shifted to the left by the width of the scrollbar
   document.body.style.overflow = "hidden";
 
-  // Create canvas element
   const mainCanvas = createCanvas(
     canvasId,
     `${windowInnerWidthString}px`,
     `${windowInnerHeightString}px`
   );
 
-  // Get canvas context to draw into the canvas
   canvasContext = mainCanvas.getContext("2d");
 
-  // Workaround to create an image element and setting the source to the visibleTabImageURI to pass it into drawImage()
   const image = new Image();
   image.src = visibleTabImageURI;
   image.onload = () =>
     canvasContext.drawImage(image, 0, 0, window.innerWidth, window.innerHeight);
 
-  // Get any offset of the canvas to subtract during the area selection
   offsetX = mainCanvas.offsetLeft;
   offsetY = mainCanvas.offsetTop;
 
-  // Get current mouse position on mouse down as a starting position
   mainCanvas.onmousedown = (e) => {
     isDrawing = true;
     startX = parseInt(e.clientX - offsetX);
     startY = parseInt(e.clientY - offsetY);
   };
 
-  // Set isDrawing to false to not register mouse movements while not holding mouse down
   mainCanvas.onmouseup = (e) => {
     isDrawing = false;
     console.log("x=", startX, mouseX);
     console.log("y=", startY, mouseY);
 
-    // Clip canvas to selected area and turn clipped canvas into image to pass to new tab
     clipCanvasAndCreateImage();
   };
 
-  // Get current and starting mouse position to draw a rectangle over canvas
   mainCanvas.onmousemove = (e) => {
     if (isDrawing) {
       mouseX = parseInt(e.clientX - offsetX);
       mouseY = parseInt(e.clientY - offsetY);
 
-      // Clear canvas and draw a new rectangle on every mouse move
       canvasContext.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
       canvasContext.strokeRect(
         startX,
@@ -140,20 +123,19 @@ function createDrawableCanvas() {
   return mainCanvas;
 }
 
+//Draws a new rectangle over canvas
 function drawRectangle(x, y, width, height, c) {
   let ctx = c.getContext("2d");
   ctx.globalAlpha = 0.5;
 
-  // set fill and stroke styles
   ctx.fillStyle = "white";
   ctx.strokeStyle = "black";
 
-  // draw a rectangle with fill and stroke
   ctx.fillRect(x, y, width, height);
   ctx.strokeRect(x, y, width, height);
 }
 
-// Function that dynamically creates a canvas element with a given width,height and id and returns it
+// Kind of constructor which creates a new canvas
 function createCanvas(id, width, height) {
   // Create canvas element
   const createdCanvas = document.createElement("canvas");
@@ -166,40 +148,34 @@ function createCanvas(id, width, height) {
   return createdCanvas;
 }
 
-// Function that clips the canvas to the selected area and converts it into a base64 image
+// Function to clips the canvas
 function clipCanvasAndCreateImage() {
-  // Create another canvas that is as big as the selected area
   clippedCanvas = createCanvas(
     clippedCanvasId,
     `${mouseX - startX}px`,
     `${mouseY - startY}px`
   );
 
-  // Get canvas context to draw the clipped image into the canvas
   clippedCanvasContext = clippedCanvas.getContext("2d");
 
-  // Set the visible tab image from before as the source of the image for the new canvas
   const image = new Image();
   image.src = visibleTabImageURI;
 
-  // Draw the visible content image into the new canvas, BUT clip it to the before selected area
   image.onload = () => {
     clippedCanvasContext.drawImage(
-      image, // load image into the canvas
-      startX, // x position (upper left corner) of the selected area
-      startY, // y position (upper left corner) of the selected area
+      image,
+      startX,
+      startY,
       mouseX - startX,
       mouseY - startY,
-      0, // x position of where to place the clipped image in the canvas
-      0, // y position of where to place the clipped image in the canvas
-      mouseX - startX, // width of the screenshot in the canvas (aspect ratio)
+      0,
+      0,
+      mouseX - startX,
       mouseY - startY
-    ); // height of the screenshot in the canvas (aspect ratio)
+    );
 
-    // Turn clipped canvas into image
     clippedImageURI = clippedCanvas.toDataURL("image/png");
 
-    // Create data object including everything needed to show the image on the new tab
     var data = {
       image: clippedImageURI,
       width: window.innerWidth,
@@ -208,7 +184,7 @@ function clipCanvasAndCreateImage() {
       action: "customAreaSuccessful",
     };
 
-    // Send a message to the background script to send the custom area screenshot to the new tab
+    // Sending  message to the background
     chrome.runtime.sendMessage(
       {
         data: data,
@@ -227,42 +203,36 @@ function clipCanvasAndCreateImage() {
   };
 }
 
+// Create button element to close overlay when clicked
 function addCloseButton() {
-  // Create button element to close overlay when clicked
   const closeButton = document.createElement("button");
 
   closeButton.textContent = "×";
 
   closeButton.setAttribute("id", closeButtonId);
 
-  // Add on click event listener to the button
   closeButton.onclick = () => {
-    // Remove all added elements from the body
     document.body.removeChild(canvas);
-    // document.body.removeChild(overlay);
+    document.body.removeChild(overlay);
     document.body.removeChild(closeButton);
 
-    // Unpause all paused videos that were playing before
     allVideosPlaying.forEach((vid) => vid.play());
 
-    // Enable scrolling again
     document.body.style.overflow = "visible";
   };
 
   document.body.appendChild(closeButton);
 }
 
+//Creates overlay to entire window
 function createOverlayElement() {
-  // Create overlay element
   const siteOverlay = document.createElement("div");
 
-  // Dynamically set overlay width and height
   siteOverlay.style.width = `${windowInnerWidthString}px`;
   siteOverlay.style.height = `${windowInnerHeightString}px`;
 
   siteOverlay.setAttribute("id", overlayId);
 
-  // Save and pause every video on the page that is currently playing
   allVideosOnPage.forEach((video) => {
     if (!video.paused) {
       allVideosPlaying.push(video);
@@ -270,7 +240,6 @@ function createOverlayElement() {
     }
   });
 
-  // Add created overlay to body to show in current tab
   document.body.appendChild(siteOverlay);
 
   return siteOverlay;

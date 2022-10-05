@@ -1,15 +1,4 @@
 "use strict";
-//$ Setting the values
-// chrome.storage.local.set(
-//   {
-//     kitten: { name: "Mog", eats: "mice" },
-//     monster: { name: "Kraken", eats: "people" },
-//   },
-//   function () {
-//     console.log("Obj set");
-//   }
-// );
-
 //$ To clear entire Storage
 // chrome.storage.local.clear(() => {
 //   console.log("Storage Cleared");
@@ -29,11 +18,6 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
-//$ To remove particular element from storage
-// chrome.storage.local.remove(["kitten"], () => {
-//   console.log("Kitten Removed");
-// });
-
 const today = new Date();
 const date =
   today.getFullYear() +
@@ -51,10 +35,6 @@ function pushOnStorage(key) {
   });
   getAllElements();
 }
-
-// chrome.storage.local.set({ [dateTime]: time }, () => {
-//   console.log(dateTime + "is added to storage");
-// });
 
 //$ To get all item from the stoarge
 function getAllElements() {
@@ -81,17 +61,14 @@ function deleteLastImage(array) {
 
 // Function to create a file name for the screenshot
 function getFilename(url) {
-  // Creates a url object to parse the url more easily
   url = new URL(url);
 
-  // Get the hostname and pathname of the url
   const hostname =
     url.hostname.split(".").length > 2
       ? url.hostname.split(".")[1]
       : url.hostname.split(".")[0];
   var pathname = url.pathname.replace(/\//g, "-");
 
-  // Get current date and time
   const today = new Date();
   const date =
     today.getFullYear() +
@@ -108,16 +85,12 @@ function getFilename(url) {
   return hostname + pathname + dateTime + ".png";
 }
 
-//
 // Custom area button stuff
-//
 
-// EventListener for "Custom Area" button
 document
   .getElementById("customArea")
   .addEventListener("click", clickCustomArea);
 
-// Function to call when "Custom Area" button is clicked.
 function clickCustomArea() {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     const currentTab = tabs[0];
@@ -128,25 +101,18 @@ function clickCustomArea() {
   });
 }
 
-//
 // Visible content button stuff
-//
 
-// EventListener for "Visible Content" button
 document
   .getElementById("visibleContent")
   .addEventListener("click", clickVisibleContent);
 
-// Function to call when "Visible Content" button is clicked.
 function clickVisibleContent() {
-  // Get current active tab inforamtion
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const currentTab = tabs[0];
 
     let filename = getFilename(currentTab.url);
 
-    // console.log("visible");
-    // Start capturing the visible content of the currently active tab
     chrome.tabs.captureVisibleTab(null, { format: "png" }, (dataURL) => {
       if (dataURL) {
         var data = {
@@ -156,23 +122,18 @@ function clickVisibleContent() {
           devicePixelRatio: window.devicePixelRatio,
         };
 
-        // pushOnStorage(data.image);
-        // Send the image including additional information to new tab
         sendImageToNewTab(data, currentTab.id, currentTab.index, filename);
       }
     });
   });
 }
 
-//
 // History button stuff
-//
 
 document
   .getElementById("recentScreenshots")
   .addEventListener("click", showHistory);
 
-// Function to call when "Full Page" button is clicked.
 function showHistory() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const currentTab = tabs[0];
