@@ -1,3 +1,9 @@
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "Record Screen") {
+    console.log("Record Screen");
+  }
+});
+
 document.getElementById("recordScreen").addEventListener("click", recordScreen);
 const recordScreen = async () => {
   const videoStream = await navigator.mediaDevices.getDisplayMedia({
