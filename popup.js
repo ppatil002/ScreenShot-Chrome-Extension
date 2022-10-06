@@ -147,3 +147,22 @@ function showHistory() {
     showHistoryinNewTab(data, currentTab.id, currentTab.index, filename);
   });
 }
+
+// Screen Recording button stuff
+
+document
+  .getElementById("screenRecord")
+  .addEventListener("click", recordScreen());
+
+function recordScreen() {
+  chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+    const currentTab = tabs[0];
+
+    // let filename = getFilename(currentTab.url);
+
+    let data = {
+      action: "Record Screen",
+    };
+    recordScreenInNewTab(data, currentTab.id, currentTab.index);
+  });
+}

@@ -158,3 +158,34 @@ async function showHistoryinNewTab(
     });
   });
 }
+
+async function recordScreenInNewTab(data, currentTabId, currentTabIndex) {
+  let URL = "screenRecording.html";
+  const createdTabPromise = createTab(currentTabId, currentTabIndex, URL);
+
+  createdTabPromise.then((createdTab) => {
+    chrome.tabs.query(
+      {
+        currentWindow: true,
+        url: "chrome-extension://iemghmgbnaiiidmfabbkmcenlhofoifl/" + URL,
+      },
+      function (tabs) {
+        for (var i = 0; i < tabs.length; i++) {
+          if (
+            tabs[i].id !== createdTab.id &&
+            tabs[i].index > currentTabIndex + 1
+          ) {
+            chrome.tabs.remove(tabs[i].id);
+          }
+        }
+      }
+    );
+
+    chrome.tabs.sendMessage(createdTab.id, data, (responseCallback) => {
+      if (responseCallback) {
+        console.log("Open Video Recorder");
+        chrome.tabs.update(createdTab.id, { active: true, highlighted: true });
+      }
+    });
+  });
+}
