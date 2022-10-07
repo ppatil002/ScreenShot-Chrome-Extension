@@ -152,17 +152,17 @@ function showHistory() {
 
 document
   .getElementById("screenRecord")
-  .addEventListener("click", recordScreen());
+  .addEventListener("click", recordScreen);
 
 function recordScreen() {
   chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
     const currentTab = tabs[0];
 
-    // let filename = getFilename(currentTab.url);
+    let filename = getFilename(currentTab.url);
 
     let data = {
       action: "Record Screen",
     };
-    recordScreenInNewTab(data, currentTab.id, currentTab.index);
+    recordScreenInNewTab(data, currentTab.id, currentTab.index, filename);
   });
 }

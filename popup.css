@@ -6,6 +6,7 @@ body {
   --light-color: #f0f0f0;
   --button-background-color: #f0f0f0;
   --button-text-color: var(--dark-color);
+  --record-area-icon-light: url('images/record.PNG');
   --custom-area-icon-light: url('images/area_white.png');
   --custom-area-icon-dark: url('images/area_black.png');
   --custom-area-icon: var(--custom-area-icon-dark);
@@ -94,6 +95,10 @@ body.dark-theme {
 
 #recent-btn-icon {
   background-image: var(--recent-icon-dark);
+}
+
+#record-btn-icon {
+  background-image: var(--record-area-icon-light);
 }
 
 p {
