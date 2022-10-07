@@ -23,12 +23,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     localStorage.setItem("img_crop", message.image);
 
     // Add zoom in/out when image clicked
-    image.onclick = () => {
-      console.log("image clicked");
-      image.classList.contains("zoomed_in")
-        ? image.classList.remove("zoomed_in")
-        : image.classList.add("zoomed_in");
-    };
+    // image.onclick = () => {
+    //   console.log("image clicked");
+    //   image.classList.contains("zoomed_in")
+    //     ? image.classList.remove("zoomed_in")
+    //     : image.classList.add("zoomed_in");
+    // };
 
     // Set href and download property on button to download image when clicked
     downloadButtonPNG.href = message.image;
