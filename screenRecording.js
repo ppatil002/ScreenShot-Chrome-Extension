@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-document.getElementById("recordScreen").addEventListener("click", recordScreen);
+
 const recordScreen = async () => {
   const videoStream = await navigator.mediaDevices.getDisplayMedia({
     video: {
@@ -25,3 +25,5 @@ const recordScreen = async () => {
     );
   };
 };
+
+document.getElementById("recordScreen").addEventListener("click", recordScreen);
