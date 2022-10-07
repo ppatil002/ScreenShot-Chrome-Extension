@@ -20,12 +20,11 @@ https://github.com/ppatil002/Crop-Image.git
 
 1. Captures Custom as well as Full Screen Screenshot of a webpage
 2. Copy to clipboard option, copies the selected image
-3. Captured image can be downloaded
-4. Using the download option you can download a PNG File of your screenshot
-5. Crop option helps to crop the screenshot take
-6. Restore option helps you to restore the original screenshot after cropping
-7. Recent Screenshot option lists the 5 recently taken screenshots and these screenshots can be copied also
-8. Screen Recording feature for selected window, tab and full screen share.
+3. Using the download option you can download a PNG File of your screenshot
+4. Crop option helps to crop the screenshot take
+5. Restore option helps you to restore the original screenshot after cropping
+6. Recent Screenshot option lists the 5 recently taken screenshots and these screenshots can be copied also
+7. Screen Recording feature for selected window, tab and full screen share.
 
 > Tip: If none of the options work right after adding the extension to chrome, refresh the website you want to screenshot and it should work as expected afterwards.
 
