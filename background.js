@@ -159,7 +159,7 @@ async function showHistoryinNewTab(
   });
 }
 
-async function recordScreenInNewTab(data, currentTabId, currentTabIndex) {
+async function recordScreenInNewTab(data, currentTabId, currentTabIndex, filename) {
   let URL = "screenRecording.html";
   const createdTabPromise = createTab(currentTabId, currentTabIndex, URL);
 
@@ -180,6 +180,9 @@ async function recordScreenInNewTab(data, currentTabId, currentTabIndex) {
         }
       }
     );
+
+    data.action = "Record Screen";
+    data.filename = filename;
 
     chrome.tabs.sendMessage(createdTab.id, data, (responseCallback) => {
       if (responseCallback) {
